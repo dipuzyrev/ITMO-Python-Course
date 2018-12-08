@@ -103,15 +103,12 @@ def find_empty_positions(grid: List[List[str]]) -> Optional[Tuple[int, int]]:
     >>> find_empty_positions([['1', '2', '3'], ['4', '5', '6'], ['.', '8', '9']])
     (2, 0)
     """
-    if len(grid) == 0:
-        return False
-
     for i in range(len(grid)):
         for j in range(len(grid[0])):
             if grid[i][j] == '.':
                 return (i, j)
 
-    return False
+    return None
 
 
 def find_possible_values(grid: List[List[str]], pos: Tuple[int, int]) -> Set[str]:
@@ -146,7 +143,7 @@ def find_possible_values(grid: List[List[str]], pos: Tuple[int, int]) -> Set[str
     return values
 
 
-def solve(grid: List[List[str]]) -> Optional[List[List[str]]]:
+def solve(grid: List[List[str]], step = 0) -> Optional[List[List[str]]]:
     """ Решение пазла, заданного в grid """
     """ Как решать Судоку?
         1. Найти свободную позицию
@@ -159,13 +156,42 @@ def solve(grid: List[List[str]]) -> Optional[List[List[str]]]:
     >>> solve(grid)
     [['5', '3', '4', '6', '7', '8', '9', '1', '2'], ['6', '7', '2', '1', '9', '5', '3', '4', '8'], ['1', '9', '8', '3', '4', '2', '5', '6', '7'], ['8', '5', '9', '7', '6', '1', '4', '2', '3'], ['4', '2', '6', '8', '5', '3', '7', '9', '1'], ['7', '1', '3', '9', '2', '4', '8', '5', '6'], ['9', '6', '1', '5', '3', '7', '2', '8', '4'], ['2', '8', '7', '4', '1', '9', '6', '3', '5'], ['3', '4', '5', '2', '8', '6', '1', '7', '9']]
     """
-    
+
+    freePos = find_empty_positions(grid)
+    if freePos is None:
+        return grid
+    else:
+        possibleValues = find_possible_values(grid, freePos)
+
+        if not possibleValues:
+            return None
+        
+        for value in possibleValues:
+            grid[freePos[0]][freePos[1]] = value
+            solution = solve(grid, step + 1)
+            if solution is None:
+                grid[freePos[0]][freePos[1]] = '.'
+                continue
+            else:
+                return solution
 
 
 def check_solution(solution: List[List[str]]) -> bool:
     """ Если решение solution верно, то вернуть True, в противном случае False """
     # TODO: Add doctests with bad puzzles
-    pass
+    values = {'1', '2', '3', '4', '5', '6', '7', '8', '9'}
+    
+    for i in range(9):
+        pos1 = (i, 0)
+        pos2 = (0, i)
+        pos3 = (i // 3, i % 3)
+        row = set(get_row(solution, pos1))
+        col = set(get_col(solution, pos2))
+        block = set(get_block(solution, pos3))
+        if values != row or values != col or values != block:
+            return False
+
+    return True
 
 
 def generate_sudoku(N: int) -> List[List[str]]:
