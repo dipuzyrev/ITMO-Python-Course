@@ -43,8 +43,27 @@ def multiplicative_inverse(e, phi):
     >>> multiplicative_inverse(7, 40)
     23
     """
-    # PUT YOUR CODE HERE
-    pass
+    a = e
+    b = phi
+    quotients = []
+
+    while (a % b != 0):
+        c = a % b
+        quotients.append(a // b)
+        a = b
+        b = c
+
+    quotients.append(a // b)
+
+    x = 0
+    y = 1
+    for i in range(len(quotients) - 2, -1, -1):
+        c = x
+        x = y
+        y = c - (y * quotients[i])
+
+    return x % phi
+
 
 
 def generate_keypair(p, q):
