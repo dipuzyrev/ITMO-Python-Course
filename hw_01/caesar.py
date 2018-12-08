@@ -11,7 +11,28 @@ def encrypt_caesar(plaintext):
     >>> encrypt_caesar("")
     ''
     """
-    # PUT YOUR CODE HERE
+    shift = 3
+    bigAlphabetStart = ord('A')
+    bigAlphabetEnd = ord('Z')
+    smallAlphabetStart = ord('a')
+    smallAlphabetEnd = ord('z')
+    ciphertext = ""
+
+    for i in range(len(plaintext)):
+        letterCode = ord(plaintext[i])
+        if bigAlphabetStart <= letterCode <= bigAlphabetEnd:
+            codesRange = [bigAlphabetStart, bigAlphabetEnd]
+        elif smallAlphabetStart <= letterCode <= smallAlphabetEnd:
+            codesRange = [smallAlphabetStart, smallAlphabetEnd]
+        else:
+            ciphertext += plaintext[i]
+            continue
+
+        newLetterCode = letterCode + shift
+        if newLetterCode > codesRange[1]:
+            newLetterCode = codesRange[0] + (newLetterCode - codesRange[1] - 1)
+
+        ciphertext += chr(newLetterCode)
     return ciphertext
 
 
