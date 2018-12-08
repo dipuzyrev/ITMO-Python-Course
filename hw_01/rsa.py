@@ -28,8 +28,13 @@ def gcd(a, b):
     >>> gcd(3, 7)
     1
     """
-    # PUT YOUR CODE HERE
-    pass
+    minNumber = a if a < b else b
+
+    for i in range(minNumber, 1, -1):
+        if (a % i == 0) and (b % i == 0):
+            return i
+
+    return 1
 
 
 def multiplicative_inverse(e, phi):
@@ -51,10 +56,10 @@ def generate_keypair(p, q):
         raise ValueError('p and q cannot be equal')
 
     # n = pq
-    # PUT YOUR CODE HERE
+    n = p * q
 
     # phi = (p-1)(q-1)
-    # PUT YOUR CODE HERE
+    phi = (p - 1) * (q - 1)
 
     # Choose an integer e such that e and phi(n) are coprime
     e = random.randrange(1, phi)
