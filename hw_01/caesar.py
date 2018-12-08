@@ -1,17 +1,16 @@
-def encrypt_caesar(plaintext):
+def encrypt_caesar(plaintext, shift):
     """
     Encrypts plaintext using a Caesar cipher.
 
-    >>> encrypt_caesar("PYTHON")
-    'SBWKRQ'
-    >>> encrypt_caesar("python")
-    'sbwkrq'
-    >>> encrypt_caesar("Python3.6")
-    'Sbwkrq3.6'
-    >>> encrypt_caesar("")
+    >>> encrypt_caesar("PYTHON", 2)
+    'RAVJQP'
+    >>> encrypt_caesar("python", 2)
+    'ravjqp'
+    >>> encrypt_caesar("Python3.6", 2)
+    'Ravjqp3.6'
+    >>> encrypt_caesar("", 2)
     ''
     """
-    shift = 3
     bigAlphabetStart = ord('A')
     bigAlphabetEnd = ord('Z')
     smallAlphabetStart = ord('a')
@@ -36,20 +35,19 @@ def encrypt_caesar(plaintext):
     return ciphertext
 
 
-def decrypt_caesar(ciphertext):
+def decrypt_caesar(ciphertext, shift):
     """
     Decrypts a ciphertext using a Caesar cipher.
 
-    >>> decrypt_caesar("SBWKRQ")
+    >>> decrypt_caesar("RAVJQP", 2)
     'PYTHON'
-    >>> decrypt_caesar("sbwkrq")
+    >>> decrypt_caesar("ravjqp", 2)
     'python'
-    >>> decrypt_caesar("Sbwkrq3.6")
+    >>> decrypt_caesar("Ravjqp3.6", 2)
     'Python3.6'
-    >>> decrypt_caesar("")
+    >>> decrypt_caesar("", 2)
     ''
     """
-    shift = 3
     bigAlphabetStart = ord('A')
     bigAlphabetEnd = ord('Z')
     smallAlphabetStart = ord('a')
