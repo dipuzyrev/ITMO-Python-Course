@@ -28,13 +28,11 @@ def gcd(a, b):
     >>> gcd(3, 7)
     1
     """
-    minNumber = a if a < b else b
-
-    for i in range(minNumber, 1, -1):
-        if (a % i == 0) and (b % i == 0):
-            return i
-
-    return 1
+    while (a % b != 0):
+        c = a % b
+        a = b
+        b = c
+    return b
 
 
 def multiplicative_inverse(e, phi):
