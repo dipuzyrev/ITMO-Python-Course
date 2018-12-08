@@ -49,5 +49,26 @@ def decrypt_caesar(ciphertext):
     >>> decrypt_caesar("")
     ''
     """
-    # PUT YOUR CODE HERE
+    shift = 3
+    bigAlphabetStart = ord('A')
+    bigAlphabetEnd = ord('Z')
+    smallAlphabetStart = ord('a')
+    smallAlphabetEnd = ord('z')
+    plaintext = ""
+
+    for i in range(len(ciphertext)):
+        letterCode = ord(ciphertext[i])
+        if bigAlphabetStart <= letterCode <= bigAlphabetEnd:
+            codesRange = [bigAlphabetStart, bigAlphabetEnd]
+        elif smallAlphabetStart <= letterCode <= smallAlphabetEnd:
+            codesRange = [smallAlphabetStart, smallAlphabetEnd]
+        else:
+            plaintext += ciphertext[i]
+            continue
+
+        newLetterCode = letterCode - shift
+        if newLetterCode < codesRange[0]:
+            newLetterCode = codesRange[1] - (codesRange[0] - newLetterCode - 1)
+
+        plaintext += chr(newLetterCode)
     return plaintext
