@@ -125,22 +125,17 @@ def solve(grid: List[List[str]]) -> Optional[List[List[str]]]:
     """
 
     freePos = find_empty_positions(grid)
-    if freePos is None:
-        return grid
-    else:
-        possibleValues = find_possible_values(grid, freePos)
-
-        if not possibleValues:
-            return None
+    if freePos is None: return grid
         
-        for value in possibleValues:
-            grid[freePos[0]][freePos[1]] = value
-            solution = solve(grid)
-            if solution is None:
-                grid[freePos[0]][freePos[1]] = '.'
-                continue
-            else:
-                return solution
+    possibleValues = find_possible_values(grid, freePos)
+    if not possibleValues: return None
+    
+    row, col = freePos
+    for value in possibleValues:
+        grid[row][col] = value
+        solution = solve(grid)
+        if solution: return solution
+        grid[row][col] = '.'
 
 
 def check_solution(solution: List[List[str]]) -> bool:
