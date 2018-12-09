@@ -141,7 +141,7 @@ def solve(grid: List[List[str]]) -> Optional[List[List[str]]]:
 def check_solution(solution: List[List[str]]) -> bool:
     """ Если решение solution верно, то вернуть True, в противном случае False """
     # TODO: Add doctests with bad puzzles
-    values = {'1', '2', '3', '4', '5', '6', '7', '8', '9'}
+    values = set("123456789")
     
     for i in range(9):
         pos1 = (i, 0)
