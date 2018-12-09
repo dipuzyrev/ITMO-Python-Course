@@ -29,18 +29,8 @@ def group(values: List[str], n: int) -> List[List[str]]:
     >>> group([1,2,3,4,5,6,7,8,9], 3)
     [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
     """
-    matrix = []
-    line = []
-
-    for i in range(len(values)):
-        line.append(values[i])
-
-        if len(line) == n:
-            matrix.append(line.copy())
-            line.clear()
-
-    return matrix
-
+    return [values[i:i+n] for i in range(0, len(values), n)]
+    
 
 def get_row(grid: List[List[str]], pos: Tuple[int, int]) -> List[str]:
     """ Возвращает все значения для номера строки, указанной в pos
