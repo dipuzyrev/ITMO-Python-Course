@@ -139,8 +139,15 @@ def solve(grid: List[List[str]]) -> Optional[List[List[str]]]:
 
 
 def check_solution(solution: List[List[str]]) -> bool:
-    """ Если решение solution верно, то вернуть True, в противном случае False """
-    # TODO: Add doctests with bad puzzles
+    """ Если решение solution верно, то вернуть True, в противном случае False
+
+    >>> grid = read_sudoku('puzzle1_bad_solution.txt')
+    >>> check_solution(grid)
+    False
+    >>> grid = read_sudoku('puzzle1_nice_solution.txt')
+    >>> check_solution(grid)
+    True
+    """
     values = set("123456789")
     
     for i in range(9):
