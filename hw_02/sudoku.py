@@ -1,4 +1,5 @@
 from typing import Tuple, List, Set, Optional
+import random
 
 
 def read_sudoku(filename: str) -> List[List[str]]:
@@ -122,6 +123,9 @@ def find_possible_values(grid: List[List[str]], pos: Tuple[int, int]) -> Set[str
     >>> values == {'2', '5', '9'}
     True
     """
+    if (grid[pos[0]][pos[1]] != '.'):
+        return None
+
     rowValues = get_row(grid, pos)
     colValues = get_col(grid, pos)
     blockValues = get_block(grid, pos)
@@ -143,7 +147,7 @@ def find_possible_values(grid: List[List[str]], pos: Tuple[int, int]) -> Set[str
     return values
 
 
-def solve(grid: List[List[str]], step = 0) -> Optional[List[List[str]]]:
+def solve(grid: List[List[str]]) -> Optional[List[List[str]]]:
     """ Решение пазла, заданного в grid """
     """ Как решать Судоку?
         1. Найти свободную позицию
@@ -168,7 +172,7 @@ def solve(grid: List[List[str]], step = 0) -> Optional[List[List[str]]]:
         
         for value in possibleValues:
             grid[freePos[0]][freePos[1]] = value
-            solution = solve(grid, step + 1)
+            solution = solve(grid)
             if solution is None:
                 grid[freePos[0]][freePos[1]] = '.'
                 continue
@@ -216,7 +220,26 @@ def generate_sudoku(N: int) -> List[List[str]]:
     >>> check_solution(solution)
     True
     """
-    pass
+    n = N
+    n = 0 if N < 0 else n
+    n = 81 if N > 81 else n
+
+    grid = []
+    for i in range(9):
+        row = []
+        for j in range(9):
+            row.append('.')
+        grid.append(row)
+
+    grid = solve(grid)
+
+    for i in range(81 - n):
+        pos = (random.randint(0, 8), random.randint(0, 8))
+        while (grid[pos[0]][pos[1]] == '.'):
+            pos = (random.randint(0, 8), random.randint(0, 8))
+        grid[pos[0]][pos[1]] = '.'
+
+    return grid
 
 
 if __name__ == '__main__':
