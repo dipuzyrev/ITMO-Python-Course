@@ -182,13 +182,7 @@ def generate_sudoku(N: int) -> List[List[str]]:
     n = 0 if N < 0 else n
     n = 81 if N > 81 else n
 
-    grid = []
-    for i in range(9):
-        row = []
-        for j in range(9):
-            row.append('.')
-        grid.append(row)
-
+    grid = [['.'] * 9 for _ in range(9)]
     grid = solve(grid)
 
     for i in range(81 - n):
