@@ -107,25 +107,7 @@ def find_possible_values(grid: List[List[str]], pos: Tuple[int, int]) -> Set[str
     if (grid[pos[0]][pos[1]] != '.'):
         return None
 
-    rowValues = get_row(grid, pos)
-    colValues = get_col(grid, pos)
-    blockValues = get_block(grid, pos)
-
-    values = {'1', '2', '3', '4', '5', '6', '7', '8', '9'}
-
-    for i in range(len(rowValues)):
-        if rowValues[i] in values:
-            values.remove(rowValues[i])
-
-    for i in range(len(colValues)):
-        if colValues[i] in values:
-            values.remove(colValues[i])
-
-    for i in range(len(blockValues)):
-        if blockValues[i] in values:
-            values.remove(blockValues[i])
-
-    return values
+    return set("123456789") - set(get_row(grid, pos)) - set(get_col(grid, pos)) - set(get_block(grid, pos))
 
 
 def solve(grid: List[List[str]]) -> Optional[List[List[str]]]:
