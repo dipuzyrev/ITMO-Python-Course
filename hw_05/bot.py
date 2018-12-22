@@ -2,7 +2,6 @@ import requests
 import config
 import telebot
 from datetime import datetime
-from pprint import pprint
 from bs4 import BeautifulSoup
 
 
