@@ -1,6 +1,7 @@
 import requests
 import config
 import telebot
+from typing import Optional, Tuple
 from datetime import datetime
 from bs4 import BeautifulSoup
 
@@ -28,7 +29,13 @@ DAYS_RUS = {
 bot = telebot.TeleBot(config.access_token)
 
 
-def get_page(group, week=''):
+def get_page(group: str, week: str = '') -> str:
+    """ Get page source from ITMO university website by group number and week parity
+
+    :param group: user's academic group
+    :param week: 0 - all schedule, 1 - even, 2 - odd
+    :return: page's HTML code
+    """
     if week:
         week = str(week) + '/'
     url = '{domain}/{group}/{week}raspisanie_zanyatiy_{group}.htm'.format(
@@ -40,7 +47,13 @@ def get_page(group, week=''):
     return web_page
 
 
-def parse_schedule(web_page, day):
+def parse_schedule(web_page: str, day: int) -> Optional[Tuple]:
+    """ Parse schedule HTML page to get certain day lessons
+
+    :param web_page: page's HTML code
+    :param day: what day to parse - from 1 (monday) to 7 (sunday)
+    :return: 5 lists with this information about day lessons - time, parity, location, room, subject
+    """
     soup = BeautifulSoup(web_page, "html5lib")
     day_attr = str(day) + 'day'
 
@@ -74,35 +87,52 @@ def parse_schedule(web_page, day):
     return times_list, parities_list, locations_list, rooms_list, lessons_list
 
 
-def send_help(chat_id):
+def send_help(chat_id: int):
+    """ Send help to user if his query is incorrect
+
+    :param chat_id: chat ID
+    :return: nothing
+    """
     commands = [
         '<b>/near</b> group',
         '<b>/day</b> week group',
         '<b>/tomorrow</b> group',
         '<b>/all</b> week group']
 
-    bot.send_message(chat_id, "Прости, но меня научили отвечать только на такие команды:\n\n" + \
+    bot.send_message(chat_id, "Прости, но меня научили отвечать только на такие команды:\n\n" +
                      "\n".join(commands), parse_mode='HTML')
 
 
-def print_lesson(schedule, i):
+def print_lesson(schedule: Optional[Tuple], i: int) -> str:
+    """ Generate 1 lesson HTML code for user
+
+    :param schedule: 5 specified lists about certain day lessons info
+    :param i: lesson number
+    :return: generated 1 lesson HTML code for user
+    """
     if schedule is None or i >= len(schedule[0]) or i < 0:
         return None
 
     times_lst, parities_lst, locations_lst, rooms_lst, lessons_lst = schedule
     printed = ''
+    parity = "({}), ".format(parities_lst[i]) if parities_lst[i] else ""
     if locations_lst[i] and rooms_lst[i]:  # general case
-        printed += '<b>{}</b> ({}), {}, {}, {}\n\n'.\
-            format(times_lst[i], parities_lst[i], locations_lst[i], rooms_lst[i], lessons_lst[i])
+        printed += '<b>{}</b> {}{}, {}, {}\n\n'.\
+            format(times_lst[i], parity, locations_lst[i], rooms_lst[i], lessons_lst[i])
     else:  # online lesson
-        printed += '<b>{}</b> ({}), {}\n\n'.format(times_lst[i], parities_lst[i], lessons_lst[i])
+        printed += '<b>{}</b> {}{}\n\n'.format(times_lst[i], parity, lessons_lst[i])
 
     return printed
 
 
 @bot.message_handler(commands=['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'])
 def get_schedule(message):
-    """ Получить расписание на указанный день """
+    """ Get schedule on certain day
+
+    :param message: user's message data
+    :return: nothing
+    """
+
     query = message.text.split()
     day = query[0][1:]
     week = 0
@@ -133,15 +163,20 @@ def get_schedule(message):
 
 @bot.message_handler(commands=['near'])
 def get_near_lesson(message):
-    """ Получить ближайшее занятие """
+    """ Get next lesson
+
+    :param message: user's message data
+    :return: nothing
+    """
+
     query = message.text.split()
     group = ''
 
     if len(query) == 1:
         send_help(message.chat.id)
         return False
-    else:
-        group = query[1]
+
+    group = query[1]
 
     week = (datetime.today().isocalendar()[1] % 2) + 1
     day = datetime.today().isocalendar()[2]
@@ -192,7 +227,12 @@ def get_near_lesson(message):
 
 @bot.message_handler(commands=['tomorrow'])
 def get_tommorow(message):
-    """ Получить расписание на следующий день """
+    """ Get tomorrow schedule (or monday, if next day is sunday)
+
+    :param message: user's message data
+    :return: nothing
+    """
+
     query = message.text.split()
     group = ''
 
@@ -215,12 +255,16 @@ def get_tommorow(message):
     new_command += ' ' + str(week) + ' ' + group
     message.text = new_command
 
-    return get_schedule(message)
+    get_schedule(message)
 
 
 @bot.message_handler(commands=['all'])
 def get_all_schedule(message):
-    """ Получить расписание на всю неделю для указанной группы """
+    """ Get week schedule
+
+    :param message: user's message data
+    :return: nothing
+    """
     query = message.text.split()
     week = 0
     group = ''
