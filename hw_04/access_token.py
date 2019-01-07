@@ -13,6 +13,8 @@ def get_access_token(client_id, scope):
     &response_type=token&\
     display=page\
     """.replace(" ", "").format(client_id=client_id, scope=scope)
+
+    print(url)
     webbrowser.open_new_tab(url)
 
 

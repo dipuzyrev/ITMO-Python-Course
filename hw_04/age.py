@@ -19,7 +19,7 @@ def age_predict(user_id: int) -> Optional[float]:
     friends_ages = []
     request = get_friends(user_id, 'bdate')
     user_friends = [User(**friend) for friend in request]
-    pprint.pprint(user_friends)
+    # pprint.pprint(user_friends)
     for friend in user_friends:
         if (friend.bdate is not None) and (len(friend.bdate) >= 8):
             friend_bdate = dt.strptime(friend.bdate, "%d.%m.%Y")

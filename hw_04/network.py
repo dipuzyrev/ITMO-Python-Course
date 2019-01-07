@@ -73,7 +73,7 @@ def plot_graph(graph: List[Tuple]):
 
 
 if __name__ == '__main__':
-    user_id = config.VK_CONFIG['my_id']
+    user_id = 364936790
     response = get_friends(user_id)
     graph = get_network(response, as_edgelist=True)
     plot_graph(graph)

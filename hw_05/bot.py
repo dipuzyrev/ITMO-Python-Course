@@ -87,7 +87,7 @@ def parse_schedule(web_page: str, day: int) -> Optional[Tuple]:
     return times_list, parities_list, locations_list, rooms_list, lessons_list
 
 
-def send_help(chat_id: int):
+def send_help(chat_id: int) -> None:
     """ Send help to user if his query is incorrect
 
     :param chat_id: chat ID

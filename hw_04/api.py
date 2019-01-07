@@ -85,7 +85,7 @@ def messages_get_history(user_id: int, offset: int = 0, count: int = 20) -> List
         if response:
             result = response.json()
             if 'error' in result:
-                print(result['error']['error_description'])
+                print(result['error']['error_msg'])
             else:
                 for message in result['response']['items']:
                     messages.append(Message(**message))
