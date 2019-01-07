@@ -125,6 +125,7 @@ class GameOfLife:
 
         # Create cell list
         cell_list = CellList.from_file('pattern.txt')
+        #cell_list = CellList(self.cell_height, self.cell_width, True)
 
         running = True
         while running:
