@@ -1,14 +1,17 @@
 from bottle import (
-    route, run, template, request, redirect
+    route, run, template, request, redirect, TEMPLATE_PATH
 )
 
-from scrapper import get_news
+from scraputils import get_news
 from db import News, session
 from bayes import NaiveBayesClassifier
+from bayes import clean
 
 
+@route("/")
 @route("/news")
 def news_list():
+    TEMPLATE_PATH.insert(0, '')
     s = session()
     rows = s.query(News).filter(News.label == None).all()
     return template('news_template', rows=rows)
@@ -16,19 +19,73 @@ def news_list():
 
 @route("/add_label/")
 def add_label():
-    # PUT YOUR CODE HERE
+    # 1. Get label and query id from request parameters
+    label = request.query['label']
+    entry_id = request.query['id']
+
+    # 2. Update database
+    s = session()
+    entry = s.query(News).get(entry_id)
+    entry.label = label
+    s.commit()
+
+    # 3. Redirect to main page with news
     redirect("/news")
 
 
 @route("/update")
 def update_news():
-    # PUT YOUR CODE HERE
+    # 1. Get all available news from hacker news
+    new_news = get_news('https://news.ycombinator.com/', 17)
+
+    # 2. Add news in database, if the aren't already there
+    for entry in new_news:
+        s = session()
+        existing_entry = s.query(News).filter_by(title=entry['title'], author=entry['author']).first()
+
+        if not existing_entry:
+            print('adding to db...')
+
+            new = News(title=entry['title'],
+                       author=entry['author'],
+                       url=entry['url'],
+                       comments=entry['comments'],
+                       points=entry['points'])
+            s.add(new)
+            s.commit()
+
+    # 3. Redirect to main page with news
     redirect("/news")
 
 
-@route("/classify")
-def classify_news():
-    # PUT YOUR CODE HERE
+@route('/recommendations')
+def recommendations():
+    TEMPLATE_PATH.insert(0, '')
+    s = session()
+
+    # 1. Classify labeled news
+    rows = s.query(News).filter(News.label != None).all()
+
+    X, y = [], []
+    for row in rows:
+        X.append(row.title)
+        y.append(row.label)
+
+    X = [clean(x).lower() for x in X]
+
+    model = NaiveBayesClassifier()
+    model.fit(X, y)
+
+    # 2. Get unlabeled news
+    new_rows = s.query(News).filter(News.label == None).all()
+
+    # 3. Get predictions
+    marked = []
+    for row in new_rows:
+        marked.append((model.predict(row.title.split()), row))
+
+    # 4. Print ranked table
+    return template('news_ranked', rows=marked)
 
 
 if __name__ == "__main__":

@@ -7,6 +7,7 @@
     </head>
     <body>
         <div class="ui container" style="padding-top: 10px;">
+        <a href="/recommendations">Рекомендации >></a>
         <table class="ui celled table">
             <thead>
                 <th>Title</th>
