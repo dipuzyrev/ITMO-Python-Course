@@ -38,12 +38,14 @@ def update_news():
     # 1. Get all available news from hacker news
     new_news = get_news('https://news.ycombinator.com/', 17)
 
-    # 2. Add news in database, if the aren't already there
-    for entry in new_news:
-        s = session()
-        existing_entry = s.query(News).filter_by(title=entry['title'], author=entry['author']).first()
+    # 2. Get all news from our database and transform response to list with Tuples - (title, author)
+    s = session()
+    old_news = s.query(News).all()
+    old_news = [(news.title, news.author) for news in old_news]
 
-        if not existing_entry:
+    # 3. Add news in database, if the aren't already there
+    for entry in new_news:
+        if (entry['title'], entry['author']) not in old_news:
             print('adding to db...')
 
             new = News(title=entry['title'],
@@ -54,7 +56,7 @@ def update_news():
             s.add(new)
             s.commit()
 
-    # 3. Redirect to main page with news
+    # 4. Redirect to main page with news
     redirect("/news")
 
 
