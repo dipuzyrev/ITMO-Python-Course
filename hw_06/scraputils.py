@@ -76,19 +76,3 @@ def get_news(url: str, n_pages: int = 1) -> List[Dict]:
         news.extend(news_list)
         n_pages -= 1
     return news
-
-
-if __name__ == "__main__":
-    pass
-    # news = get_news('https://news.ycombinator.com/', 17)
-    #
-    # s = session()
-    #
-    # for i in range(len(news)):
-    #     new = News(title=news[i]['title'],
-    #             author=news[i]['author'],
-    #             url=news[i]['url'],
-    #             comments=news[i]['comments'],
-    #             points=news[i]['points'])
-    #     s.add(new)
-    #     s.commit()
