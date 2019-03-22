@@ -13,8 +13,8 @@ class NaiveBayesClassifier:
     def __init__(self, alpha=1):
         self.alpha = alpha
         self.vectors = {}  # all unique vectors
-        self.d = 0  # count of unique vectors
-        self.labels_d = {}  # count of vectors in specific class (label)
+        self.d = 0  # number of unique vectors
+        self.labels_d = {}  # number of vectors in specific class (label)
         self.labels_p = {}  # probability of each class (label)
 
     def fit(self, X: List[str], y: List[str]) -> None:
